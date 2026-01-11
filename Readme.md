@@ -21,9 +21,9 @@ This repo focuses on two main areas:
 
 ---
 
-# To see how I have implemented the assignment check
+## To see how I have implemented the assignment check out
 
-    - https://github.com/heygogu/car-rental
+    https://github.com/heygogu/car-rental
 
 Setup Instructions
 Prerequisites
