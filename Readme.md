@@ -21,6 +21,10 @@ This repo focuses on two main areas:
 
 ---
 
+# To see how I have implemented the assignment check
+
+    - [github](https://github.com/heygogu/car-rental)
+
 Setup Instructions
 Prerequisites
 
@@ -36,11 +40,11 @@ cd <repo-name>
 
 Install dependencies:
 
-bash npm install
+`npm install`
 
 Configure the backend URL:
 
-Create a .env file or update the configuration in helpers.js
+Update the configuration in `helpers.js`
 Set the base URL to your running backend server
 
 BASE_URL=http://localhost:3000
@@ -49,16 +53,16 @@ Running the Tests
 Make sure your backend server is running
 Run all tests:
 
-bash npm test
+` npm test`
 
 Run specific test files:
 
-bash npm test auth.signup.test.js
-npm test bookings.create.test.js
+`npm test auth.signup.test.js`
+`npm test bookings.create.test.js`
 
 Run tests in watch mode:
 
-bash npm test -- --watch
+`npm test --watch`
 
 ## 🔐 Authentication APIs
 
@@ -340,9 +344,7 @@ tests/
 1. Make sure your backend server is running
 2. Configure the base URL in your test environment
 3. Run tests:
-   ```bash
-   npm test
-   ```
+   `npm test`
 
 ---
 
