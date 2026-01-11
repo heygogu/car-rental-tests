@@ -1,3 +1,5 @@
+API Integration Test Suite
+
 This repository contains integration-level tests for a running backend server. The goal is to validate API contracts (status codes, response shapes, error messages, and security behavior) in a way that closely mirrors real production usage.
 
 These tests do not start the server. They assume the backend is already running and reachable via HTTP.
@@ -32,9 +34,9 @@ Server URL
 
 The backend base URL is configured in one place:
 
-/tests/helpers.js
+\1
 
-const BASE_URL = "http://localhost:3000";
+\1
 
 If your server runs on a different host or port, change it here. No environment variables are required for this test suite.
 
@@ -48,13 +50,7 @@ To keep tests meaningful and consistent, backend code must follow these conventi
 
 All API responses must follow this structure:
 
-{
-"success": true | false,
-"data": {
-"message": "human readable message",
-"...": "additional fields if needed"
-}
-}
+\1
 
 Do not:
 • Change field names
@@ -106,12 +102,7 @@ Responses must not expose:
 
 All unexpected failures must return:
 
-{
-"success": false,
-"data": {
-"message": "Internal server error"
-}
-}
+\1
 
 Internal errors should be logged on the server, not returned to clients.
 
@@ -135,8 +126,7 @@ Ensure the backend server is running.
 
 Then, from this repository:
 
-npm install
-npm test
+\1
 
 Tests will immediately start sending requests to the configured BASE_URL.
 
