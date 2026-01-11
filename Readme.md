@@ -1,170 +1,75 @@
-API Integration Test Suite
+# API Integration Test Suite
 
-This repository contains integration-level tests for a running backend server. The goal is to validate API contracts (status codes, response shapes, error messages, and security behavior) in a way that closely mirrors real production usage.
+This repository contains **integration tests** for a backend server.
 
-These tests do not start the server. They assume the backend is already running and reachable via HTTP.
+These tests are written to check whether important API endpoints are working
+as expected when hit like a real client.
 
-⸻
+> ⚠️ Important:
+>
+> - This repo **does NOT start the backend**
+> - The backend server must already be running
+> - Tests will hit real HTTP endpoints
 
-Purpose
+---
 
-The intent of this test suite is to:
-• Verify that API endpoints behave exactly as documented
-• Enforce consistent status codes and error messages
-• Catch misconfigurations (auth, database, environment) early
-• Act as a contract between backend implementation and clients
+## What is tested in this repo?
 
-If tests fail, it means the backend violated an expected contract — not that the test is “too strict”.
+This repo focuses mainly on **authentication-related APIs**.
 
-⸻
+### Signup (`POST /auth/signup`)
 
-How This Repo Works
-• Tests are written using Vitest
-• Requests are made using the native fetch API
-• The backend server is assumed to be running already
-• Tests hit real HTTP endpoints (no mocks, no in-memory injection)
+Signup tests cover things like:
 
-This makes the tests closer to how real clients interact with the system.
+- Creating a new user successfully
+- Rejecting duplicate usernames
+- Rejecting requests with missing fields
+- Making sure passwords are **not leaked** in responses
 
-⸻
+Expected behavior:
 
-Configuration
+- Successful signup → `201`
+- Duplicate username → `409`
+- Missing/invalid fields → `400`
 
-Server URL
+---
 
-The backend base URL is configured in one place:
+### Login (`POST /auth/login`)
 
-\1
+Login tests cover:
 
-\1
+- Logging in with correct credentials
+- Rejecting wrong passwords
+- Rejecting non-existent users
+- Rejecting requests with missing fields
+- Ensuring JWT/token is returned **only on success**
 
-If your server runs on a different host or port, change it here. No environment variables are required for this test suite.
+Expected behavior:
 
-⸻
+- Successful login → `200`
+- Wrong credentials → `401`
+- Missing fields → `400`
+- No token should ever be returned on failure
 
-Expected API Conventions
+---
 
-To keep tests meaningful and consistent, backend code must follow these conventions.
+### Security checks
 
-1. Response Shape (Required)
+Some tests also check that:
 
-All API responses must follow this structure:
+- Internal errors are not leaked
+- Passwords are never returned
+- Tokens are only present on valid login
+- Error responses are consistent
 
-\1
+---
 
-Do not:
-• Change field names
-• Return raw primitives
-• Mix error formats across endpoints
+## Folder structure
 
-⸻
-
-2. HTTP Status Codes
-
-Use status codes semantically:
-• 200 – Successful read or login
-• 201 – Resource created successfully
-• 400 – Validation error / bad input
-• 401 – Authentication failure
-• 403 – Authenticated but not authorized
-• 404 – Resource not found
-• 409 – Conflict (e.g. duplicate username)
-• 500 – Internal server error
-
-Do not return 200 for failures.
-Do not overload 409 or 400 for unexpected crashes.
-
-⸻
-
-3. Error Messages Are Part of the Contract
-
-Tests assert exact error messages. This is intentional.
-
-Examples:
-• "username already exists"
-• "user does not exist"
-• "incorrect password"
-• "Internal server error"
-
-If you change an error message, you must update the tests.
-
-This prevents silent breaking changes for frontend or API consumers.
-
-⸻
-
-4. Never Leak Internal Errors
-
-Responses must not expose:
-• Stack traces
-• Prisma errors
-• Database details
-• Library names (bcrypt, jwt, etc.)
-
-All unexpected failures must return:
-
-\1
-
-Internal errors should be logged on the server, not returned to clients.
-
-⸻
-
-5. Authentication Rules
-
-For auth endpoints:
-• Passwords must never be returned
-• Tokens are returned only on successful login
-• Invalid credentials must return 401
-• Missing fields must return 400
-
-Tests will explicitly check for these invariants.
-
-⸻
-
-Running the Tests
-
-Ensure the backend server is running.
-
-Then, from this repository:
-
-\1
-
-Tests will immediately start sending requests to the configured BASE_URL.
-
-⸻
-
-Test Philosophy
-
-These tests are intentionally strict.
-
-They are designed to:
-• Fail fast
-• Expose hidden assumptions
-• Prevent accidental API regressions
-
-If a test fails, the correct response is:
-
-“What contract did the backend violate?”
-
-—not—
-
-“How do I relax the test?”
-
-⸻
-
-When to Update Tests
-
-Update tests when:
-• API behavior is intentionally changed
-• Error messages are intentionally revised
-• New endpoints or flows are added
-
-Do not update tests to hide bugs.
-
-⸻
-
-Final Note
-
-This repository is not a tutorial.
-It is a verification harness.
-
-If all tests pass, consumers of the API can rely on its behavior with confidence.
+```text
+tests/
+  ├─ auth.signup.test.js     # signup related tests
+  ├─ auth.login.test.js      # login related tests
+  ├─ auth.security.test.js   # basic security checks
+  └─ helpers.js              # shared request helpers
+```
