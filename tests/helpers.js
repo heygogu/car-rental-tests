@@ -97,7 +97,6 @@ async function createUserAndGetToken() {
   const username = generateUsername("booking");
   const password = "password123";
 
-  // signup
   const signup = await post("/auth/signup", {
     username,
     password,
@@ -109,7 +108,6 @@ async function createUserAndGetToken() {
 
   const userId = signup.data.data.userId;
 
-  // login
   const login = await post("/auth/login", {
     username,
     password,
