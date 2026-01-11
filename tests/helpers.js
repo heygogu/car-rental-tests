@@ -39,6 +39,12 @@ export const post = (path, body, token = null) =>
 export const get = (path, token = null) =>
   httpRequest("GET", path, null, token);
 
+export const put = (path, body, token = null) =>
+  httpRequest("PUT", path, body, token);
+
+export const del = (path, token = null) =>
+  httpRequest("DELETE", path, null, token);
+
 function generateEmail(prefix = "test") {
   return `${prefix}_${Date.now()}_${Math.random()
     .toString(36)
@@ -87,6 +93,39 @@ function generateTestToken(userId, username) {
   return jwt.sign({ userId, username }, JWT_SECRET);
 }
 
+async function createUserAndGetToken() {
+  const username = generateUsername("booking");
+  const password = "password123";
+
+  // signup
+  const signup = await post("/auth/signup", {
+    username,
+    password,
+  });
+
+  if (signup.status !== 201) {
+    throw new Error("User signup failed");
+  }
+
+  const userId = signup.data.data.userId;
+
+  // login
+  const login = await post("/auth/login", {
+    username,
+    password,
+  });
+
+  if (login.status !== 200) {
+    throw new Error("User login failed");
+  }
+
+  return {
+    userId,
+    username,
+    token: login.data.data.token,
+  };
+}
+
 export {
   BASE_URL,
   JWT_SECRET,
@@ -95,4 +134,5 @@ export {
   createUser,
   generateTestToken,
   generateUsername,
+  createUserAndGetToken,
 };
